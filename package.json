@@ -1,0 +1,46 @@
+{
+  "name": "dsh-go-gateway-fix",
+  "version": "1.0.0",
+  "description": "本地修复代理：把 OpenCode Go 网关塞进 reasoning_content 的模型输出回填到 content，可选合并严重碎片化的正文",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/txxt114514/dsh-go-gateway-fix.git"
+  },
+  "type": "commonjs",
+  "main": "proxy.js",
+  "bin": {
+    "dsh-go-gateway-fix": "proxy.js"
+  },
+  "scripts": {
+    "start": "node proxy.js",
+    "test": "node test/selftest.js && node test/inject-test.js && node test/merge-test.js",
+    "test:merge": "node test/merge-test.js",
+    "test:inject": "node test/inject-test.js",
+    "verify": "node test/verify.js",
+    "e2e": "node test/e2e-proof.js",
+    "hunt": "node test/hunt.js"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "opencode",
+    "gateway",
+    "reasoning_content",
+    "sse",
+    "proxy",
+    "deepseek"
+  ],
+  "files": [
+    "proxy.js",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "examples",
+    "scripts",
+    "test"
+  ]
+}

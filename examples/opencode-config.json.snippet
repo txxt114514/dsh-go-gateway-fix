@@ -1,0 +1,31 @@
+{
+  "_comment_1": "dsh-go-gateway-fix —— OpenCode CLI provider 配置片段",
+  "_comment_2": "位置：~/.config/opencode/opencode.json（Windows: %USERPROFILE%\\.config\\opencode\\opencode.json）",
+  "_comment_3": "这是「片段」：请把 provider 与 model 两节合并进你现有的 opencode.json，不要整file覆盖。",
+  "_comment_4": "关键改动只有一处：options.baseURL 指向本地代理 http://127.0.0.1:8899/zen/go/v1",
+
+  "$schema": "https://opencode.ai/config.json",
+
+  "provider": {
+    "opencode-go-fixed": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "OpenCode Go（经本地修复代理）",
+      "options": {
+        "baseURL": "http://127.0.0.1:8899/zen/go/v1",
+        "apiKey": "{env:OPENCODE_API_KEY}",
+        "headers": {
+          "x-opencode-session": "opencode-cli"
+        }
+      },
+      "models": {
+        "deepseek-v4.1-flash": {
+          "name": "DeepSeek V4.1 Flash"
+        }
+      }
+    }
+  },
+
+  "model": "opencode-go-fixed/deepseek-v4.1-flash",
+
+  "_rollback": "把 baseURL 改回 https://opencode.ai/zen/go/v1，或把 model 换回你原来的 provider/model。"
+}

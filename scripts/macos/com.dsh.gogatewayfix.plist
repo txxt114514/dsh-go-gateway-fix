@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  dsh-go-gateway-fix —— macOS launchd 配置
+
+  安装脚本会自动把 __NODE_BIN__ / __PROXY_JS__ / __WORK_DIR__ / __LOG_DIR__
+  四个占位符替换成本机真实路径。手工安装请自己改这四处。
+
+  手工安装：
+    cp com.dsh.gogatewayfix.plist ~/Library/LaunchAgents/
+    # 改掉四个占位符
+    launchctl load -w ~/Library/LaunchAgents/com.dsh.gogatewayfix.plist
+
+  卸载：
+    launchctl unload -w ~/Library/LaunchAgents/com.dsh.gogatewayfix.plist
+    rm ~/Library/LaunchAgents/com.dsh.gogatewayfix.plist
+
+  查看状态 / 日志：
+    launchctl list | grep gogatewayfix
+    tail -f ~/Library/Logs/dsh-go-gateway-fix/proxy.out.log
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.dsh.gogatewayfix</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__NODE_BIN__</string>
+        <string>__PROXY_JS__</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>__WORK_DIR__</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PORT</key>
+        <string>8899</string>
+        <key>HOST</key>
+        <string>127.0.0.1</string>
+        <!-- 碎片合并默认关；想开就把下面两行的注释去掉 -->
+        <!-- <key>DSH_MERGE_FRAGMENT</key><string>1</string> -->
+        <!-- <key>DSH_FRAGMENT_MAX_CHARS</key><string>40</string> -->
+    </dict>
+
+    <!-- 崩溃 / 退出后自动拉起 -->
+    <key>KeepAlive</key>
+    <true/>
+    <!-- 进程起来太快就崩时，最少等 3 秒再拉，避免疯狂重启 -->
+    <key>ThrottleInterval</key>
+    <integer>3</integer>
+
+    <!-- 登录时自动加载 -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>__LOG_DIR__/proxy.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__LOG_DIR__/proxy.err.log</string>
+
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>

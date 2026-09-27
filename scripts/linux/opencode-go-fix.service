@@ -1,0 +1,57 @@
+# ============================================================================
+# dsh-go-gateway-fix —— systemd unit（用户级或系统级都能用）
+#
+# 安装脚本会自动把 __NODE_BIN__ / __PROXY_JS__ / __WORK_DIR__ 三个占位符
+# 替换成本机的真实路径。如果你手工安装，请自己改这三处。
+#
+# 用户级（推荐，免 sudo）：
+#   cp opencode-go-fix.service ~/.config/systemd/user/
+#   # 手工改掉三个占位符，并删掉下面的 User= 行
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now opencode-go-fix.service
+#
+# 系统级（开机即启，无需登录）：
+#   sudo cp opencode-go-fix.service /etc/systemd/system/
+#   # 改占位符，并把 User= 改成你自己的用户名
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now opencode-go-fix.service
+# ============================================================================
+
+[Unit]
+Description=dsh-go-gateway-fix - OpenCode Go 网关 reasoning_content 回填代理
+Documentation=https://github.com/opencode-ai/opencode/issues/37635
+# 代理要连外网，所以等网络就绪
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# ↓ 系统级安装时把这里改成你的用户名；用户级安装请删掉这一行
+User=__YOUR_USER__
+WorkingDirectory=__WORK_DIR__
+ExecStart=__NODE_BIN__ __PROXY_JS__
+
+# 环境变量：按需增删
+Environment=NODE_ENV=production
+Environment=PORT=8899
+Environment=HOST=127.0.0.1
+# 碎片合并默认关；想开就取消下面这行的注释
+# Environment=DSH_MERGE_FRAGMENT=1
+# Environment=DSH_FRAGMENT_MAX_CHARS=40
+# Environment=DSH_FRAGMENT_RATIO=4
+
+# 崩溃自动重启
+Restart=always
+RestartSec=3
+
+# 日志进 journald：journalctl --user -u opencode-go-fix -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=opencode-go-fix
+
+# 基本加固：只要读自己的目录 + 联网就够了
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target

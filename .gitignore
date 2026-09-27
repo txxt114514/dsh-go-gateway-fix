@@ -1,0 +1,18 @@
+# 运行时产物
+node_modules/
+proxy.log
+*.old-*.log
+*.log
+
+# 测试输出
+verify-result.json
+e2e-proof.json
+hunt-result.json
+alive-check.json
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
